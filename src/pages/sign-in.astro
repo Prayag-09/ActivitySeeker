@@ -1,0 +1,84 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Sign in to Find Something ToDo" description="Sign in to add ToDos, complete ToDos, and feel productive.">
+    <script>
+        import { initClerk } from "../utils/session.js";
+
+        const signInComponent = document.getElementById('sign-in') as HTMLDivElement;
+        const returnUrl = `${window.location.origin}/${window.location.search.replace("?return=", "")}`;
+        const clerk = initClerk();
+
+        (async () => {
+            await clerk.load({});
+            clerk.mountSignIn(signInComponent, {
+                afterSignInUrl: returnUrl
+            });
+        })();
+    </script>
+
+    <main>
+        <h1>Sign in</h1>
+        <p>Add ToDos, complete ToDos, <span>feel productive</span>.</p>
+        <div id="sign-in"></div>
+    </main>
+</Layout>
+
+<style is:global>
+    .cl-card {
+        width: 100%;
+        background-color: var(--stone);
+        margin-bottom: 4rem;
+    }
+
+    .cl-headerTitle {
+        font-family: var(--font-heading);
+        color: var(--green-dark);
+    }
+
+    .cl-headerSubtitle {
+        color: var(--green-dark);
+    }
+
+    .cl-footerActionLink, .cl-footerActionText {
+        color: var(--green-dark);
+    }
+
+    .cl-footerActionLink {
+        text-decoration: underline;
+        text-decoration-style: wavy;
+        text-underline-offset: 0.25rem;
+    }
+
+    .cl-socialButtonsIconButton {
+        border-color: var(--green-light);
+        border-width: 0.25rem;
+    }
+
+    .cl-socialButtonsIconButton:focus, .cl-socialButtonsIconButton:focus-visible {
+        box-shadow: var(--green-mid) 0px 0px 0px 3px;
+    }
+
+    .cl-internal-b3fm6y {
+        background-color: var(--yellow);
+        color: var (--green-dark);
+    }
+</style>
+
+<style>
+    p {
+        margin-bottom: 4rem;
+    }
+
+    p span {
+        text-decoration: underline;
+        text-underline-offset: 0.5rem;
+        text-decoration-style: wavy;
+        text-decoration-color: var(--yellow);
+    }
+
+    #sign-in {
+        margin: auto;
+    }
+</style>

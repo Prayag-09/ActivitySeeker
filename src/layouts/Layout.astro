@@ -1,0 +1,109 @@
+---
+import Header from "../components/Header.astro";
+const { title, description } = Astro.props;
+const { pathname } = Astro.url;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪴</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Young+Serif&display=swap" rel="stylesheet">
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+
+      <!-- OG base data -->
+      <meta property="og:url" content="https://activity-seeker.netlify.app/" />
+      <meta property="og:title" content="Find Something ToDo" />
+      <meta property="og:description" content="Bored? Want to procrastinate and look productive? Find something ToDo. And tell others what to do." />
+      <meta property="og:site_name" content="activity-seeker.netlify.app" />
+      <meta property="og:locale" content="en_GB" />      
+</head>
+
+<body>
+  <Header currentPath={pathname} />
+  <slot />
+  <footer><p>Made by Prayag </p></footer>
+</body>
+
+<style is:global>
+  :root {
+    --green-dark: #2d5134;
+    --green-mid: #6a994e;
+    --green-light: #a7c957;
+    --stone: #f2e8cf;
+    --red: #822f31;
+    --yellow: #f4e285;
+
+    --font-heading: 'Young Serif', serif;
+    --font-body: 'IBM Plex Mono', monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 100%;
+    background-color: var(--green-dark);
+    background-image: url("leaves.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+  }
+
+  body {
+    max-width: 700px;
+    margin: auto;
+    background-color: rgba(45, 81, 52, 0.95);
+    color: var(--stone);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1rem, 2vw, 2rem);
+  }
+
+  h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  footer {
+    margin-top: auto;
+  }
+
+  footer p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  footer p a {
+    color: inherit;
+    border-radius: 0.5rem;
+  }
+
+  footer p a:focus,
+  footer p a:focus-visible {
+    outline: transparent;
+    outline-style: solid;
+    box-shadow: var(--green-dark) 0 0 0 0.08rem, var(--green-light) 0 0 0 0.32rem;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+</style>
+</html>

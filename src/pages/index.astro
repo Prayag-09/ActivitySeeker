@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { GET } from './api/get-todos.json.js';
+import { ToDos } from '../components/ToDos.jsx';
+const response = await GET(Astro);
+const data = await response.json();
+---
+
+<Layout title="Find Something ToDo" description="Bored? Want to procrastinate but also be productive? Find something ToDo. And suggest tasks for others too.">
+  <main>
+    <p class="bored">Feeling Bored?</p>
+    <p class="want_to">Want to procrastinate <span><em>and</em> still be productive?</span></p>
+    <h1>Find Something ToDo</h1>
+
+    <h2>Current Tasks People Are Doing</h2>
+
+    <ToDos todos={data.todos} limit="9" client:load />
+
+    <div class="ctas">
+      <h3>Want to Join the Fun?</h3>
+      <a href="/add">Add Your ToDo</a>
+      <a href="/browse">Browse All ToDos</a>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .bored {
+    font-size: 2rem;
+    text-decoration: underline;
+    text-underline-offset: 0.5rem;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--green-light);
+    margin-bottom: 2rem;
+  }
+
+  .want_to {
+    margin-bottom: 2rem;
+  }
+
+  .want_to span {
+    text-decoration: underline;
+    text-underline-offset: 0.5rem;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--yellow);
+  }
+
+  .ctas {
+    margin-bottom: 4rem;
+  }
+
+  h3 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  a {
+    display: block;
+    text-align: center;
+    font-size: 1.6rem;
+    color: var(--stone);
+    text-decoration: underline;
+    text-underline-offset: 0.5rem;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--green-mid);
+    width: max-content;
+    margin: 0 auto 1.5rem auto;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  a:hover {
+    background-color: var(--green-dark);
+    color: var(--red);
+  }
+
+  a:focus,
+  a:focus-visible {
+    outline: transparent;
+    outline-style: solid;
+    box-shadow: var(--green-dark) 0 0 0 0.08rem, var(--green-light) 0 0 0 0.32rem;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+</style>

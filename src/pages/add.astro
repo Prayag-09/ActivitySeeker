@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<script>
+    import { getSession } from "../utils/session.js";
+
+    const session = await getSession();
+    const signedInEl = document.querySelector('[data-signed-in]') as HTMLElement;
+    const hiddenInput = document.querySelector('[data-user-id]') as HTMLInputElement;
+
+    if (session === null) {
+        window.location.href = "/sign-in?return=add";
+    } else {
+        signedInEl.style.display = "block";
+        hiddenInput.value = session.user.id;
+    }
+</script>
+
+<Layout title="Add Something ToDo" description="Add your ToDos for somebody else to do.">
+    <main>
+        <script>
+            import Filter from "bad-words";
+            const form = document.querySelector('form');
+            const warning = document.querySelector('[data-warning]') as HTMLElement;
+            const error = document.querySelector('[data-error]') as HTMLElement;
+            const input = document.querySelector("input") as HTMLInputElement;
+
+            input.addEventListener("keyup", (e) => {
+                const target = e.target as HTMLInputElement;
+                if (target.value === "") {
+                    warning.style.display = "none";
+                    error.style.display = "none";
+                }
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(e.target as HTMLFormElement);
+
+                const filter = new Filter();
+                const newTodo = formData.get('todo') as string;
+                const processedToDo = filter.clean(newTodo);
+
+                if (processedToDo !== newTodo) {
+                    warning.style.display = "block";
+                } else {
+                    const response = await fetch("/api/add-todo", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success === true) {
+                        window.location.href = "/browse?success=true";
+                    } else {
+                        error.style.display = "block";
+                    }
+                }
+            });
+        </script>
+        
+        <div data-signed-in>
+            <h1>Add Something ToDo</h1>
+            <p>Offload those tasks!</p>
+            <form action="/api/add-todo" method="POST">
+                <label for="todo">Your ToDo, make it <em>productive!</em></label>
+                <input id="todo" name="todo" type="text" value="" placeholder="Be the best version of yourself" required>
+                <p data-warning>⚠️ Please don't use bad words!</p>
+                <p data-error>Sorry, something went wrong. Please try again.</p>
+                <input type="hidden" name="user_id" value="" data-user-id>
+                <button type="submit">Add ToDo</button>
+            </form>
+
+            <p>Fun fact, <em>you'll</em> never see <em>your</em> ToDo again. It's gone forever. You can relax, now!</p>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    [data-signed-in] {
+        display: none;
+    }
+
+    [data-warning], [data-error] {
+        display: none;
+        color: #ffffff;
+        background-color: var(--red);
+        font-size: 1.2rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    p {
+        line-height: 1.8;
+        margin-bottom: 4rem;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    input {
+        padding: 0.75rem;
+        font-size: clamp(1rem, 1.4vw, 1.4rem);
+        font-family: var(--font-body);
+        border: 0.25rem solid var(--yellow);
+        border-radius: 1rem;
+        color: var(--green-dark);
+    }
+
+    input:focus {
+        outline: transparent;
+        outline-style: solid;
+        box-shadow: var(--green-dark) 0 0 0 0.08rem, var(--green-light) 0 0 0 0.32rem;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    button {
+        appearance: none;
+        border-width: 0;
+        background-color: var(--stone);
+        color: var(--red);
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        text-align: center;
+        display: block;
+        margin-bottom: 2rem;
+    }
+
+    button:focus, button:focus-visible {
+        outline: transparent;
+        outline-style: solid;
+        box-shadow: var(--green-dark) 0 0 0 0.08rem, var(--green-light) 0 0 0 0.32rem;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    label {
+        display: block;
+    }
+
+    button {
+        display: inline-block;
+    }
+</style>
